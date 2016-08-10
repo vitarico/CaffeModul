@@ -223,10 +223,11 @@ def classify(caffemodel, deploy_file, image_files,
         for label, confidence in classification:
             print '{:9.4%} - "{}"'.format(confidence/100.0, label)
         print
+    return indices[0] #first indice is most likely class of result 
 
 
 if __name__ == '__main__':
-    script_start_time = time.time()
+#    script_start_time = time.time()
 
     parser = argparse.ArgumentParser(description='Classification example - DIGITS')
 
@@ -240,20 +241,21 @@ if __name__ == '__main__':
 
     ### Optional arguments
 
-    parser.add_argument('-m', '--mean',
+"""    parser.add_argument('-m', '--mean',
             help='Path to a mean file (*.npy)')
     parser.add_argument('-l', '--labels',
             help='Path to a labels file')
     parser.add_argument('--batch-size',
-                        type=int)
+                        type=int) """
     parser.add_argument('--nogpu',
             action='store_true',
             help="Don't use the GPU")
 
     args = vars(parser.parse_args())
 
-    classify(args['caffemodel'], args['deploy_file'], args['image_file'],
+    number=classify(args['caffemodel'], args['deploy_file'], args['image_file'],
             args['mean'], args['labels'], args['batch_size'], not args['nogpu'])
+    print number
 
-    print 'Script took %f seconds.' % (time.time() - script_start_time,)
+#    print 'Script took %f seconds.' % (time.time() - script_start_time,)
 
