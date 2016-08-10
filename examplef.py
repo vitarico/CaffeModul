@@ -31,8 +31,8 @@ def get_net(caffemodel, deploy_file, use_gpu=True):
     Keyword arguments:
     use_gpu -- if True, use the GPU for inference
     """
-    #if use_gpu:
-     #   caffe.set_mode_gpu()
+    if use_gpu:
+        caffe.set_mode_gpu()
 
     # load a new model
     return caffe.Net(deploy_file, caffemodel, caffe.TEST)
@@ -253,9 +253,8 @@ if __name__ == '__main__':
 
     args = vars(parser.parse_args())
 
-    number=classify("test/snapshot_iter_21120.caffemodel", "test/deploy.prototxt", args['image_file'], 
+    number=classify("test/snapshot_iter_21120.caffemodel", "test/deploy.prototxt", args['image_file'],
             args['mean'], args['labels'], args['batch_size'], not args['nogpu'])
     print number
 
 #    print 'Script took %f seconds.' % (time.time() - script_start_time,)
-
