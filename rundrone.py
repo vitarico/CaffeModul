@@ -48,7 +48,7 @@ def main():
            number=validation.classify("test/snapshot_iter_21120.caffemodel", "test/deploy.prototxt", cap, 
             "test/mean.binaryproto", "test/labels.txt")
             
-            time.sleep(0.5)
+           time.sleep(0.5)
            
 
            if cv2.waitKey(1) & 0xFF == ord('q'):
