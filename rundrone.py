@@ -54,15 +54,6 @@ def main():
            if cv2.waitKey(1) & 0xFF == ord('q'):
                exit()     
             
-   except:q
-       pass
-
-   print("Shutting down...")
-   drone.reset()
-   drone.halt()
-   print("Ok.")
-
-
 if __name__ == '__main__':
     
    main()
