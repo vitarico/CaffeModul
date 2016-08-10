@@ -144,6 +144,8 @@ def forward_pass(images, net, transformer, batch_size=None):
         end = time.time()
         if scores is None:
             scores = np.copy(output)
+            for a in scores:
+                print a
         else:
             scores = np.vstack((scores, output))
             for a in scores:
