@@ -67,28 +67,6 @@ def get_transformer(deploy_file, mean_file=None):
 
     return t
 
-def load_image(path, height, width, mode='RGB'):
-    """
-    Load an image from disk
-
-    Returns an np.ndarray (channels x width x height)
-
-    Arguments:
-    path -- path to an image on disk
-    width -- resize dimension
-    height -- resize dimension
-
-    Keyword arguments:
-    mode -- the PIL mode that the image should be converted to
-        (RGB for color or L for grayscale)
-    """
-    image = PIL.Image.open(path)
-    image = image.convert(mode)
-    image = np.array(image)
-    # squash
-    image = scipy.misc.imresize(image, (height, width), 'bilinear')
-    return image
-
 def forward_pass(images, net, transformer):
     """
     Returns scores for each image as an np.ndarray (nImages x nClasses)
@@ -151,7 +129,7 @@ def read_labels(labels_file):
     assert len(labels), 'No labels found'
     return labels
 
-def classify(caffemodel, deploy_file, image_files,
+def classify(caffemodel, deploy_file, image,
         mean_file=None, labels_file=None):
     """
     Classify some images against a Caffe model and print the results
@@ -159,7 +137,7 @@ def classify(caffemodel, deploy_file, image_files,
     Arguments:
     caffemodel -- path to a .caffemodel
     deploy_file -- path to a .prototxt
-    image_files -- list of paths to images
+    image_files -- numpy.ndarray
 
     Keyword arguments:
     mean_file -- path to a .binaryproto
@@ -176,11 +154,13 @@ def classify(caffemodel, deploy_file, image_files,
         mode = 'L'
     else:
         raise ValueError('Invalid number for channels: %s' % channels)
-    images = [load_image(image_file, height, width, mode) for image_file in image_files]
+    image = np.array(image)
+    # squash
+    image = scipy.misc.imresize(image, (height, width), 'bilinear')
     labels = read_labels(labels_file)
 
     # Classify the image
-    scores = forward_pass(images, net, transformer)
+    scores = forward_pass(image, net, transformer)
 
     ### Process the results
 
@@ -210,21 +190,8 @@ def classify(caffemodel, deploy_file, image_files,
 if __name__ == '__main__':
 #    script_start_time = time.time()
 
-    parser = argparse.ArgumentParser(description='Classification example - DIGITS')
 
-    ### Positional arguments
-
-    parser.add_argument('image_file',
-                        nargs='+',
-                        help='Path[s] to an image')
-
-    ### Optional arguments
-
-
-
-    args = vars(parser.parse_args())
-
-    number=classify("test/snapshot_iter_21120.caffemodel", "test/deploy.prototxt", args['image_file'], 
+    number=classify("test/snapshot_iter_21120.caffemodel", "test/deploy.prototxt", image, 
             "test/mean.binaryproto", "test/labels.txt")
     # number=classify("test/snapshot_iter_21120.caffemodel", "test/deploy.prototxt", image, args['mean'], args['labels'])
     print number
