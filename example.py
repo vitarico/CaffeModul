@@ -89,7 +89,7 @@ def load_image(path, height, width, mode='RGB'):
     image = scipy.misc.imresize(image, (height, width), 'bilinear')
     return image
 
-def forward_pass(images, net, transformer, batch_size=None):
+def forward_pass(images, net, transformer):
     """
     Returns scores for each image as an np.ndarray (nImages x nClasses)
 
@@ -99,11 +99,9 @@ def forward_pass(images, net, transformer, batch_size=None):
     transformer -- a caffe.io.Transformer
 
     Keyword arguments:
-    batch_size -- how many images can be processed at once
-        (a high value may result in out-of-memory errors)
+    batch_size -- how many images can be processed at once set to 1
     """
-    if batch_size is None:
-        batch_size = 1
+
 
     caffe_images = []
     for image in images:
@@ -115,7 +113,7 @@ def forward_pass(images, net, transformer, batch_size=None):
     dims = transformer.inputs['data'][1:]
 
     scores = None
-    for chunk in [caffe_images[x:x+batch_size] for x in xrange(0, len(caffe_images), batch_size)]:
+    for chunk in [caffe_images[x:x+1] for x in xrange(0, len(caffe_images), 1)]:
         new_shape = (len(chunk),) + tuple(dims)
         if net.blobs['data'].data.shape != new_shape:
             net.blobs['data'].reshape(*new_shape)
@@ -154,7 +152,7 @@ def read_labels(labels_file):
     return labels
 
 def classify(caffemodel, deploy_file, image_files,
-        mean_file=None, labels_file=None, batch_size=None):
+        mean_file=None, labels_file=None):
     """
     Classify some images against a Caffe model and print the results
 
@@ -182,7 +180,7 @@ def classify(caffemodel, deploy_file, image_files,
     labels = read_labels(labels_file)
 
     # Classify the image
-    scores = forward_pass(images, net, transformer, batch_size=batch_size)
+    scores = forward_pass(images, net, transformer)
 
     ### Process the results
 
@@ -228,13 +226,11 @@ if __name__ == '__main__':
             help='Path to a mean file (*.npy)')
     parser.add_argument('-l', '--labels',
             help='Path to a labels file')
-    parser.add_argument('--batch-size',
-                        type=int)
 
     args = vars(parser.parse_args())
 
     number=classify("test/snapshot_iter_21120.caffemodel", "test/deploy.prototxt", args['image_file'], 
-            args['mean'], args['labels'], args['batch_size'])
+            args['mean'], args['labels'])
     print number
 
 #    print 'Script took %f seconds.' % (time.time() - script_start_time,)
