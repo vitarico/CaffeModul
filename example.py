@@ -241,12 +241,12 @@ if __name__ == '__main__':
 
     ### Optional arguments
 
-"""    parser.add_argument('-m', '--mean',
+    parser.add_argument('-m', '--mean',
             help='Path to a mean file (*.npy)')
     parser.add_argument('-l', '--labels',
             help='Path to a labels file')
     parser.add_argument('--batch-size',
-                        type=int) """
+                        type=int)
     parser.add_argument('--nogpu',
             action='store_true',
             help="Don't use the GPU")
