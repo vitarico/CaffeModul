@@ -40,8 +40,6 @@ def main():
    while (True):
        cap = drone.VideoImage
 
-       cap = cv2.cvtColor(cap, cv2.COLOR_BGR2RGB)
-
        cv2.imshow('Live Drone Cam', cap)
            
        number=validation.classify("test/snapshot_iter_21120.caffemodel", "test/deploy.prototxt", cap, 
