@@ -210,7 +210,7 @@ def classify(caffemodel, deploy_file, image_files,
 if __name__ == '__main__':
 #    script_start_time = time.time()
 
-    parser = argparse.ArgumentParser(description='Classification example - DIGITS')
+    #parser = argparse.ArgumentParser(description='Classification example - DIGITS')
 
     ### Positional arguments
 
