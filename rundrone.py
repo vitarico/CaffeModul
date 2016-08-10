@@ -38,7 +38,7 @@ def main():
 
 
    while (True):
-       cap = drone.VideoImage()
+       cap = drone.VideoImage
 
        cap = cv2.cvtColor(cap, cv2.COLOR_BGR2RGB)
 
