@@ -42,7 +42,7 @@ def main():
 
 
    while (True):
-       cap = misc.imread('face.png')
+       cap = misc.face()
        
            
        number=validation.classify("test/snapshot_iter_21120.caffemodel", "test/deploy.prototxt", cap, 
