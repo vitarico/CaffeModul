@@ -35,22 +35,23 @@ import time
 def main():
    drone = ps_drone.Drone()
    drone.reset()
+   i=0
 
 
    while (True):
        cap = drone.VideoImage
-
-       cv2.imshow('Live Drone Cam', cap)
            
        number=validation.classify("test/snapshot_iter_21120.caffemodel", "test/deploy.prototxt", cap, 
         "test/mean.binaryproto", "test/labels.txt")
         
        print number 
             
-       time.sleep(0.5)           
+       time.sleep(0.5)  
 
-       if cv2.waitKey(1) & 0xFF == ord('q'):
-           exit()     
+        i=i+1
+    
+        if i>10:
+            exit()
             
 if __name__ == '__main__':
     
