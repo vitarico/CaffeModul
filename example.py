@@ -216,11 +216,25 @@ if __name__ == '__main__':
 
     ### Positional arguments
 
-    parser.add_argument('image_file', nargs='+', help='Path[s] to an image')
+    parser.add_argument('caffemodel',   help='Path to a .caffemodel')
+    parser.add_argument('deploy_file',  help='Path to the deploy file')
+    parser.add_argument('image_file',
+                        nargs='+',
+                        help='Path[s] to an image')
+
+    ### Optional arguments
+
+    parser.add_argument('-m', '--mean',
+            help='Path to a mean file (*.npy)')
+    parser.add_argument('-l', '--labels',
+            help='Path to a labels file')
+    parser.add_argument('--batch-size',
+                        type=int)
+
     args = vars(parser.parse_args())
 
-    number=classify("test/snapshot_iter_21120.caffemodel", "test/deploy.prototxt", args['image_file'])
-    #number=classify("test/snapshot_iter_21120.caffemodel", "test/deploy.prototxt", image)
+    number=classify("test/snapshot_iter_21120.caffemodel", "test/deploy.prototxt", args['image_file'], 
+            args['mean'], args['labels'], args['batch_size'])
     print number
 
 #    print 'Script took %f seconds.' % (time.time() - script_start_time,)
