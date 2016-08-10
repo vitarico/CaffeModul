@@ -37,22 +37,21 @@ def main():
    drone = libardrone.ARDrone(True)
    drone.reset()
 
-   try:
-       while (True):
-           cap = drone.get_image()
 
-           cap = cv2.cvtColor(cap, cv2.COLOR_BGR2RGB)
+   while (True):
+       cap = drone.get_image()
 
-           cv2.imshow('Live Drone Cam', cap)
+       cap = cv2.cvtColor(cap, cv2.COLOR_BGR2RGB)
+
+       cv2.imshow('Live Drone Cam', cap)
            
-           number=validation.classify("test/snapshot_iter_21120.caffemodel", "test/deploy.prototxt", cap, 
-            "test/mean.binaryproto", "test/labels.txt")
+       number=validation.classify("test/snapshot_iter_21120.caffemodel", "test/deploy.prototxt", cap, 
+        "test/mean.binaryproto", "test/labels.txt")
             
-           time.sleep(0.5)
-           
+       time.sleep(0.5)           
 
-           if cv2.waitKey(1) & 0xFF == ord('q'):
-               exit()     
+       if cv2.waitKey(1) & 0xFF == ord('q'):
+           exit()     
             
 if __name__ == '__main__':
     
