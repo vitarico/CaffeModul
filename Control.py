@@ -75,9 +75,9 @@ while Running:
 
     #Get Pictures to put in the Model
     cap=drone.VideoImage
- #   cap = cv2.cvtColor(cap, cv2.COLOR_BGR2RGB)
-  #  cv2.imshow("Frame", cap)
-    #cv2.imwrite("frontd.png", cap)
+    cap = cv2.cvtColor(cap, cv2.COLOR_BGR2RGB)
+    cv2.imshow("Frame", cap)
+    cv2.imwrite("frontd.png", cap)
 
     #Call The Classification Funktion here !
     DirectionClass=1
