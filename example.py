@@ -7,7 +7,6 @@ Classify an image using individual model files
 Use this script as an example to build your own tool
 """
 
-import argparse
 import os
 import time
 
