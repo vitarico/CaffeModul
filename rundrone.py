@@ -30,16 +30,20 @@ import ps_drone
 import cv2
 import example as validation
 import time
+from scipy import misc
 
 
 def main():
    drone = ps_drone.Drone()
    drone.reset()
    i=0
+   
+   
 
 
    while (True):
-       cap = drone.VideoImage
+       cap = misc.imread('face.png')
+       
            
        number=validation.classify("test/snapshot_iter_21120.caffemodel", "test/deploy.prototxt", cap, 
         "test/mean.binaryproto", "test/labels.txt")
