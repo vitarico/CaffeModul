@@ -229,6 +229,7 @@ if __name__ == '__main__':
 
     number=classify("test/snapshot_iter_21120.caffemodel", "test/deploy.prototxt", args['image_file'], 
             args['mean'], args['labels'])
+    # number=classify("test/snapshot_iter_21120.caffemodel", "test/deploy.prototxt", image, args['mean'], args['labels'])
     print number
 
 #    print 'Script took %f seconds.' % (time.time() - script_start_time,)
