@@ -26,20 +26,19 @@ This simple application allows to control the drone and see the drone's video
 stream.
 """
 
-import libardrone.libardrone as libardrone
-import argparse
+import ps_drone
 import cv2
 import example as validation
 import time
 
 
 def main():
-   drone = libardrone.ARDrone(True)
+   drone = ps_drone.Drone()
    drone.reset()
 
 
    while (True):
-       cap = drone.get_image()
+       cap = drone.VideoImage()
 
        cap = cv2.cvtColor(cap, cv2.COLOR_BGR2RGB)
 
@@ -47,6 +46,8 @@ def main():
            
        number=validation.classify("test/snapshot_iter_21120.caffemodel", "test/deploy.prototxt", cap, 
         "test/mean.binaryproto", "test/labels.txt")
+        
+       print number 
             
        time.sleep(0.5)           
 
