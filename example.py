@@ -180,7 +180,7 @@ def classify(caffemodel, deploy_file, image,
         classifications.append(result)
 
     for index, classification in enumerate(classifications):
-        print '{:-^80}'.format(' Prediction for %s ' % image_files[index])
+        print '{:-^80}'.format(' Prediction for %s ' % image[index])
         for label, confidence in classification:
             print '{:9.4%} - "{}"'.format(confidence/100.0, label)
         print
