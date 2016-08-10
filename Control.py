@@ -1,6 +1,9 @@
 import time
+import timeit
 import ps_drone
 import cv2
+import numpy
+
 def dronestart():
     drone = ps_drone.Drone()  # Start using drone
     drone.startup()  # Connects to drone and starts subprocesses
@@ -17,10 +20,9 @@ def keycontroller(drone,key):
     if key == " ":
         if drone.NavData["demo"][0][2] and not drone.NavData["demo"][0][3]:
             #drone.takeoff()
-            print "takeoff"
+            print "Takeoff"
         else:
-            #drone.land()
-            print "land"
+            drone.land()
     elif key == "0":
         drone.hover()
     elif key == "w":
@@ -70,14 +72,19 @@ drone.setSpeed(0.2)
 
 Running = True
 while Running:
-    print "In Control Loop"
-
+    start = timeit.timeit()
 
     #Get Pictures to put in the Model
-    cap=drone.VideoImage
-    cap = cv2.cvtColor(cap, cv2.COLOR_BGR2RGB)
-    cv2.imshow("Frame", cap)
-    cv2.imwrite("frontd.png", cap)
+    cap= drone.VideoImage
+    print type(cap)
+    New=numpy.array(cap)
+    cap = cv2.cvtColor(New, cv2.COLOR_BGR2RGB)
+    
+    number=validation.classify("test/snapshot_iter_21120.caffemodel", "test/deploy.prototxt", cap, 
+        "test/mean.binaryproto", "test/labels.txt")
+
+    #cv2.imshow("Frame", cap)
+    #cv2.imwrite("frontd.png", cap)
 
     #Call The Classification Funktion here !
     DirectionClass=1
@@ -85,31 +92,35 @@ while Running:
 
     #Controll via Classified Data
     #Sleep defines the inertia time
-    Sleep = 0.5
+    STime = 0.5
 
     if DirectionClass == 0:
         drone.moveForward()
         print "Forward"
-        time.sleep(Sleep)
+        time.sleep(STime)
         drone.stop()
     elif DirectionClass == 1:
         drone.turnRight()
         print "Turing Right"
-        time.sleep(Sleep)
+        time.sleep(STime)
         drone.stop()
     elif DirectionClass == 2:
         drone.turnLeft()
         print "Turning Left"
-        time.sleep(Sleep)
+        time.sleep(STime)
         drone.stop()
     elif DirectionClass == 3:
         drone.turnLeft()
         print "No Goal in Sight"
-        time.sleep(Sleep)
+        time.sleep(STime)
         drone.stop()
     else:
         drone.hover()
 
-    #Default Controller via Keys in the Terminal !
+    #Default Controller via Keys in the Terminal!!
     key = drone.getKey()
     keycontroller(drone,key)
+    endTime = timeit.timeit()
+    print "Loop Took:"
+    time=endTime - start
+    print time
