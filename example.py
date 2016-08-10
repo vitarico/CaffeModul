@@ -210,7 +210,7 @@ def classify(caffemodel, deploy_file, image_files,
 if __name__ == '__main__':
 #    script_start_time = time.time()
 
-    #parser = argparse.ArgumentParser(description='Classification example - DIGITS')
+    parser = argparse.ArgumentParser(description='Classification example - DIGITS')
 
     ### Positional arguments
 
@@ -220,10 +220,7 @@ if __name__ == '__main__':
 
     ### Optional arguments
 
-    parser.add_argument('-m', '--mean',
-            help='Path to a mean file (*.npy)')
-    parser.add_argument('-l', '--labels',
-            help='Path to a labels file')
+
 
     args = vars(parser.parse_args())
 
