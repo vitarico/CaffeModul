@@ -1,6 +1,6 @@
 import time
 import ps_drone
-#import cv2
+import cv2
 def dronestart():
     drone = ps_drone.Drone()  # Start using drone
     drone.startup()  # Connects to drone and starts subprocesses
