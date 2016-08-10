@@ -144,12 +144,8 @@ def forward_pass(images, net, transformer, batch_size=None):
         end = time.time()
         if scores is None:
             scores = np.copy(output)
-            for a in scores:
-                print a
         else:
             scores = np.vstack((scores, output))
-            for a in scores:
-                print a
         print 'Processed %s/%s images in %f seconds ...' % (len(scores), len(caffe_images), (end - start))
 
     return scores
@@ -208,6 +204,8 @@ def classify(caffemodel, deploy_file, image_files,
     ### Process the results
 
     indices = (-scores).argsort()[:, :5] # take top 5 results
+    for a in indices:
+        print a
     classifications = []
     for image_index, index_list in enumerate(indices):
         result = []
