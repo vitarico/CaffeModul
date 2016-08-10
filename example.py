@@ -225,7 +225,7 @@ if __name__ == '__main__':
     args = vars(parser.parse_args())
 
     number=classify("test/snapshot_iter_21120.caffemodel", "test/deploy.prototxt", args['image_file'], 
-            args['mean'], args['labels'])
+            "test/mean.binaryproto", "test/labels.txt")
     # number=classify("test/snapshot_iter_21120.caffemodel", "test/deploy.prototxt", image, args['mean'], args['labels'])
     print number
 
