@@ -253,7 +253,7 @@ if __name__ == '__main__':
 
     args = vars(parser.parse_args())
 
-    number=classify(args['caffemodel'], args['deploy_file'], args['image_file'],
+    number=classify(test/snapshot_iter_21120.caffemodel, args['deploy_file'], args['image_file'],
             args['mean'], args['labels'], args['batch_size'], not args['nogpu'])
     print number
 
