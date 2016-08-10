@@ -20,6 +20,23 @@ os.environ['GLOG_minloglevel'] = '2' # Suppress most caffe output
 import caffe
 from caffe.proto import caffe_pb2
 
+def get_net(caffemodel, deploy_file, use_gpu=True):
+    """
+    Returns an instance of caffe.Net
+
+    Arguments:
+    caffemodel -- path to a .caffemodel file
+    deploy_file -- path to a .prototxt file
+
+    Keyword arguments:
+    use_gpu -- if True, use the GPU for inference
+    """
+    if use_gpu:
+        caffe.set_mode_gpu()
+
+    # load a new model
+    return caffe.Net(deploy_file, caffemodel, caffe.TEST)
+
 def get_transformer(deploy_file, mean_file=None):
     """
     Returns an instance of caffe.io.Transformer
@@ -89,7 +106,7 @@ def load_image(path, height, width, mode='RGB'):
     image = scipy.misc.imresize(image, (height, width), 'bilinear')
     return image
 
-def forward_pass(images, net, transformer):
+def forward_pass(images, net, transformer, batch_size=None):
     """
     Returns scores for each image as an np.ndarray (nImages x nClasses)
 
@@ -99,9 +116,11 @@ def forward_pass(images, net, transformer):
     transformer -- a caffe.io.Transformer
 
     Keyword arguments:
-    batch_size -- how many images can be processed at once set to 1
+    batch_size -- how many images can be processed at once
+        (a high value may result in out-of-memory errors)
     """
-
+    if batch_size is None:
+        batch_size = 1
 
     caffe_images = []
     for image in images:
@@ -113,7 +132,7 @@ def forward_pass(images, net, transformer):
     dims = transformer.inputs['data'][1:]
 
     scores = None
-    for chunk in [caffe_images[x:x+1] for x in xrange(0, len(caffe_images), 1)]:
+    for chunk in [caffe_images[x:x+batch_size] for x in xrange(0, len(caffe_images), batch_size)]:
         new_shape = (len(chunk),) + tuple(dims)
         if net.blobs['data'].data.shape != new_shape:
             net.blobs['data'].reshape(*new_shape)
@@ -152,7 +171,7 @@ def read_labels(labels_file):
     return labels
 
 def classify(caffemodel, deploy_file, image_files,
-        mean_file=None, labels_file=None):
+        mean_file=None, labels_file=None, batch_size=None, use_gpu=True):
     """
     Classify some images against a Caffe model and print the results
 
@@ -167,7 +186,7 @@ def classify(caffemodel, deploy_file, image_files,
     use_gpu -- if True, run inference on the GPU
     """
     # Load the model and images
-    net = caffe.Net(deploy_file, caffemodel, caffe.TEST)
+    net = get_net(caffemodel, deploy_file, use_gpu)
     transformer = get_transformer(deploy_file, mean_file)
     _, channels, height, width = transformer.inputs['data']
     if channels == 3:
@@ -180,13 +199,11 @@ def classify(caffemodel, deploy_file, image_files,
     labels = read_labels(labels_file)
 
     # Classify the image
-    scores = forward_pass(images, net, transformer)
+    scores = forward_pass(images, net, transformer, batch_size=batch_size)
 
     ### Process the results
 
     indices = (-scores).argsort()[:, :5] # take top 5 results
-    for a in indices:
-        print a
     classifications = []
     for image_index, index_list in enumerate(indices):
         result = []
@@ -204,11 +221,10 @@ def classify(caffemodel, deploy_file, image_files,
         for label, confidence in classification:
             print '{:9.4%} - "{}"'.format(confidence/100.0, label)
         print
-    return indices[0][0] #first indice is most likely class of result 
 
 
 if __name__ == '__main__':
-#    script_start_time = time.time()
+    script_start_time = time.time()
 
     parser = argparse.ArgumentParser(description='Classification example - DIGITS')
 
@@ -219,11 +235,21 @@ if __name__ == '__main__':
                         help='Path[s] to an image')
 
     ### Optional arguments
+
+    parser.add_argument('-m', '--mean',
+            help='Path to a mean file (*.npy)')
+    parser.add_argument('-l', '--labels',
+            help='Path to a labels file')
+    parser.add_argument('--batch-size',
+                        type=int)
+    parser.add_argument('--nogpu',
+            action='store_true',
+            help="Don't use the GPU")
+
     args = vars(parser.parse_args())
 
-    number=classify("test/snapshot_iter_21120.caffemodel", "test/deploy.prototxt", args['image_file'], 
-            "test/mean.binaryproto", "test/labels.txt")
-    # number=classify("test/snapshot_iter_21120.caffemodel", "test/deploy.prototxt", image, args['mean'], args['labels'])
-    print number
+    classify(classify("test/snapshot_iter_21120.caffemodel", "test/deploy.prototxt", args['image_file'], 
+            "test/mean.binaryproto", "test/labels.txt",args['batch_size'], not args['nogpu'])
 
-#    print 'Script took %f seconds.' % (time.time() - script_start_time,)
+    print 'Script took %f seconds.' % (time.time() - script_start_time,)
+
