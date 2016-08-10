@@ -146,6 +146,8 @@ def forward_pass(images, net, transformer, batch_size=None):
             scores = np.copy(output)
         else:
             scores = np.vstack((scores, output))
+            for a in scores:
+                print a
         print 'Processed %s/%s images in %f seconds ...' % (len(scores), len(caffe_images), (end - start))
 
     return scores
