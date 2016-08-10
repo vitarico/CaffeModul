@@ -3,7 +3,7 @@ import timeit
 import ps_drone
 import cv2
 import numpy
-
+import example as validation
 def dronestart():
     drone = ps_drone.Drone()  # Start using drone
     drone.startup()  # Connects to drone and starts subprocesses
@@ -87,13 +87,15 @@ while Running:
     #cv2.imwrite("frontd.png", cap)
 
     #Call The Classification Funktion here !
-    DirectionClass=1
+    DirectionClass=number
+    
+    print number
 
 
     #Controll via Classified Data
     #Sleep defines the inertia time
     STime = 0.5
-
+"""
     if DirectionClass == 0:
         drone.moveForward()
         print "Forward"
@@ -116,7 +118,7 @@ while Running:
         drone.stop()
     else:
         drone.hover()
-
+"""
     #Default Controller via Keys in the Terminal!!
     key = drone.getKey()
     keycontroller(drone,key)
